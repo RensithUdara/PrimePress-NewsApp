@@ -1,4 +1,4 @@
-# Infosphere News App
+# PrimePress News App
 
 ## Overview
 Infosphere is a comprehensive news application built with Flutter that delivers the latest news articles from various sources around the world. The app provides a sleek, modern user interface with smooth animations and an intuitive navigation experience.
@@ -113,5 +113,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contact
 For any questions or feedback, please contact:
-- Email: your.email@example.com
-- GitHub: [Your GitHub Profile](https://github.com/yourusername)
+- Email: rensithudaragonalagoda@gmail.com
+- GitHub: [Your GitHub Profile](https://github.com/rensithudara)
