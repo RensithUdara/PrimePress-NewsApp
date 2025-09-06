@@ -244,104 +244,184 @@ class _NewsOfTheDayState extends State<_NewsOfTheDay> {
   Widget build(BuildContext context) {
     NewsviewModel headline = NewsviewModel();
     final myheight = MediaQuery.sizeOf(context).height * 1;
-    final mywidth = MediaQuery.sizeOf(context).width * 1;
     return FadeAnimation(
       1.2,
-      SizedBox(
-        height: myheight * 0.50,
-        child: FutureBuilder<TopHeadlines>(
-          future: headline.getTopHeadlines(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final articles = snapshot.data!.articles;
-              final random = Random();
-              final randomIndex =
-                  random.nextInt(articles!.length); // Get a random index
-              final randomArticle = articles[randomIndex];
-              print("image url = " + randomArticle.urlToImage.toString());
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ArticleScreen(
-                                selectedIndex: randomIndex,
-                                topHeadlines: snapshot.data!,
-                                category: 'News of the Day',
-                              )));
-                },
-                child: ImageContainer(
-                  height: MediaQuery.of(context).size.height * 0.45,
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20.0),
-                  imageUrl: randomArticle.urlToImage == null
-                      ? "https://img.freepik.com/premium-vector/error-404-concepts-landing-page_206192-61.jpg?w=1060"
-                      : randomArticle.urlToImage.toString(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomTag(
-                        backgroundColor: Colors.grey.withAlpha(150),
-                        children: [
-                          Text(
-                            'News of the Day',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                  color: Colors.white,
-                                ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Today\'s Headlines',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'See all',
+                      style: TextStyle(
+                        color: Colors.blue[700],
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: myheight * 0.40,
+              child: FutureBuilder<TopHeadlines>(
+                future: headline.getTopHeadlines(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final articles = snapshot.data!.articles;
+                    final random = Random();
+                    final randomIndex = random.nextInt(articles!.length);
+                    final randomArticle = articles[randomIndex];
+                    
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            offset: Offset(0, 2),
+                            blurRadius: 6.0,
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      Text(
-                        randomArticle.title == null
-                            ? "Title Not Available"
-                            : randomArticle.title.toString(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall!
-                            .copyWith(
-                                fontWeight: FontWeight.bold,
-                                height: 1.25,
-                                color: Colors.white),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Learn More',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    color: Colors.white,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ArticleScreen(
+                                selectedIndex: randomIndex,
+                                topHeadlines: snapshot.data!,
+                                category: 'News of the Day',
+                              ),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: double.infinity,
+                                width: double.infinity,
+                                child: Image.network(
+                                  randomArticle.urlToImage == null
+                                      ? "https://img.freepik.com/premium-vector/error-404-concepts-landing-page_206192-61.jpg?w=1060"
+                                      : randomArticle.urlToImage.toString(),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withOpacity(0.7),
+                                    ],
                                   ),
-                            ),
-                            const SizedBox(width: 10),
-                            const Icon(
-                              Icons.arrow_right_alt,
-                              color: Colors.white,
-                            ),
-                          ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue[700],
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        'Featured',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      randomArticle.title == null
+                                          ? "Title Not Available"
+                                          : randomArticle.title.toString(),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        height: 1.25,
+                                        color: Colors.white,
+                                      ),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          color: Colors.white70,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          randomArticle.publishedAt != null
+                                              ? DateFormat.yMMMMd().format(DateTime.parse(randomArticle.publishedAt.toString()))
+                                              : "Date not available",
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              );
-            } else {
-              return Center(
-                child: SpinKitCircle(
-                  color: Colors.grey,
-                ),
-              );
-            }
-          },
+                    );
+                  } else {
+                    return Center(
+                      child: SpinKitCircle(
+                        color: Colors.blue[700],
+                        size: 40,
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
