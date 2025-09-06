@@ -238,40 +238,110 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          children: [
-            Text(
-              'Info',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+        elevation: 2,
+        shadowColor: Colors.black.withOpacity(0.05),
+        titleSpacing: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [Colors.blue.shade700, Colors.blue.shade500],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                padding: EdgeInsets.all(8),
+                child: Icon(
+                  Icons.article_outlined,
+                  color: Colors.white,
+                  size: 22,
+                ),
               ),
-            ),
-            Text(
-              'sphere',
-              style: TextStyle(
-                color: Colors.blue[700],
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+              SizedBox(width: 12),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Info',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 22,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'sphere',
+                      style: TextStyle(
+                        color: Colors.blue.shade700,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 22,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.search,
-              color: Colors.black87,
+          Container(
+            margin: EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.search,
+                color: Colors.black87,
+                size: 22,
+              ),
+              padding: EdgeInsets.all(8),
             ),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications_outlined,
-              color: Colors.black87,
+          Container(
+            margin: EdgeInsets.only(right: 16),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              onPressed: () {},
+              icon: Stack(
+                children: [
+                  Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.black87,
+                    size: 22,
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.all(8),
             ),
           ),
         ],
