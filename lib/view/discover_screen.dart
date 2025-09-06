@@ -136,7 +136,6 @@ class _CategoryNewsState extends State<_CategoryNews> {
 
   @override
   Widget build(BuildContext context) {
-    // final articles = Article.articles;
     NewsviewModel categoryNews = NewsviewModel();
 
     return Column(
