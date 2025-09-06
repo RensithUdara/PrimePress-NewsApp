@@ -2,30 +2,28 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:infosphere/animation/fade_animation.dart';
-import 'package:infosphere/models/categrious__news_model.dart';
 import 'package:infosphere/models/new_views_models.dart';
 import 'package:infosphere/models/top_headlines.dart';
-import 'package:infosphere/utils/custom_news.dart';
 import 'package:infosphere/utils/image_container.dart';
 import 'package:infosphere/view/article_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class DiscoverScreen extends StatelessWidget {
-  DiscoverScreen({Key? key}) : super(key: key);
+  const DiscoverScreen({Key? key}) : super(key: key);
 
   static const routeName = '/discover';
-  final List<String> tabs = [
-    'General',
-    'Entertainment',
-    'Health',
-    'Science',
-    'Sports',
-    'Technology'
-  ];
-
   @override
   Widget build(BuildContext context) {
+    List<String> tabs = [
+      'General',
+      'Entertainment',
+      'Health',
+      'Science',
+      'Sports',
+      'Technology'
+    ];
+
     return DefaultTabController(
       initialIndex: 0,
       length: tabs.length,
@@ -35,14 +33,14 @@ class DiscoverScreen extends StatelessWidget {
           elevation: 2,
           shadowColor: Colors.black.withOpacity(0.05),
           titleSpacing: 0,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20),
               bottomRight: Radius.circular(20),
             ),
           ),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 16.0),
+          title: const Padding(
+            padding: EdgeInsets.only(left: 16.0),
             child: Text(
               "Discover",
               style: TextStyle(
@@ -54,63 +52,26 @@ class DiscoverScreen extends StatelessWidget {
           ),
           actions: [
             Container(
-              margin: EdgeInsets.only(right: 16),
+              margin: const EdgeInsets.only(right: 16),
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.search,
                   color: Colors.black87,
                   size: 22,
                 ),
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
               ),
             ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: TabBar(
-                  isScrollable: true,
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.grey.shade700,
-                  labelStyle: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  unselectedLabelStyle: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  indicator: BoxDecoration(
-                    color: Colors.blue.shade700,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  labelPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  tabs: tabs.map((String tab) => Text(tab)).toList(),
-                ),
-              ),
-              SizedBox(height: 16),
-              Expanded(
-                child: _CategoryNews(tabs: tabs),
-              ),
-            ],
-          ),
+        body: ListView(
+          padding: const EdgeInsets.all(20.0),
+          children: [_CategoryNews(tabs: tabs)],
         ),
       ),
     );
@@ -131,26 +92,40 @@ class _CategoryNews extends StatefulWidget {
 }
 
 class _CategoryNewsState extends State<_CategoryNews> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   Future<TopHeadlines>? searchResults;
 
   @override
   Widget build(BuildContext context) {
+    // final articles = Article.articles;
     NewsviewModel categoryNews = NewsviewModel();
 
     return Column(
       children: [
-        Container(
-          margin: EdgeInsets.only(top: 8, bottom: 16),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: TextFormField(
-            controller: _searchController,
-            onChanged: (query) {
-              if (query.isNotEmpty) {
-                // Call the API for search results
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.25,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Discover',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium!
+                    .copyWith(color: Colors.black, fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'News from all over the world',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _searchController,
+                onChanged: (query) {
+                  if (query.isNotEmpty) {
+                    // Call the API for search results
                     setState(() {
                       searchResults = categoryNews.getCategoryNews(query);
                     });
@@ -214,7 +189,7 @@ class _CategoryNewsState extends State<_CategoryNews> {
                             int selectedIndex = index;
                             var list = snapshot.data!.articles;
                             String formattedDate = 'Date Not Available';
-                            print("date : " + formattedDate);
+                            print("date : $formattedDate");
                             if (list![index].publishedAt != null) {
                               DateTime dateTime = DateTime.parse(
                                   list[index].publishedAt.toString());
@@ -358,11 +333,11 @@ class _CategoryNewsState extends State<_CategoryNews> {
                                     child: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
-                                        child:
-                                            ShimmerBox(width: 80, height: 80)),
+                                        child: const ShimmerBox(
+                                            width: 80, height: 80)),
                                   ),
 
-                                  Expanded(
+                                  const Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -374,7 +349,7 @@ class _CategoryNewsState extends State<_CategoryNews> {
                                           height:
                                               18, // Adjust the height as needed
                                         ),
-                                        const SizedBox(height: 10),
+                                        SizedBox(height: 10),
                                         ShimmerBox(
                                           width: 200,
                                           height:
@@ -403,7 +378,7 @@ class ShimmerBox extends StatelessWidget {
   final double width;
   final double height;
 
-  ShimmerBox({required this.width, required this.height});
+  const ShimmerBox({super.key, required this.width, required this.height});
 
   @override
   Widget build(BuildContext context) {
