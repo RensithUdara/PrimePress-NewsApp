@@ -7,6 +7,7 @@ import 'package:infosphere/models/new_views_models.dart';
 import 'package:infosphere/models/top_headlines.dart';
 import 'package:infosphere/utils/custom_tag.dart';
 import 'package:infosphere/utils/custome_container.dart';
+import 'package:infosphere/utils/category_item.dart';
 import 'package:infosphere/utils/image_container.dart';
 import 'package:infosphere/view/article_screen.dart';
 
@@ -41,24 +42,59 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.menu,
-            color: Colors.white,
-          ),
+        title: Row(
+          children: [
+            Text(
+              'Info',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            Text(
+              'sphere',
+              style: TextStyle(
+                color: Colors.blue[700],
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+          ],
         ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.search,
+              color: Colors.black87,
+            ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.notifications_outlined,
+              color: Colors.black87,
+            ),
+          ),
+        ],
       ),
-      extendBodyBehindAppBar: true,
       body: RefreshIndicator(
+        color: Colors.blue[700],
         onRefresh: _refreshData,
-        child: ListView(padding: EdgeInsets.zero, children: [
-          _NewsOfTheDay(),
-          _BreakingNews(),
-        ]),
+        child: ListView(
+          padding: EdgeInsets.only(top: 16, bottom: 20),
+          children: [
+            _CategoriesScroll(),
+            _NewsOfTheDay(),
+            _BreakingNews(),
+            _RecommendedNews(),
+          ],
+        ),
       ),
     );
   }
