@@ -12,38 +12,105 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class DiscoverScreen extends StatelessWidget {
-  const DiscoverScreen({Key? key}) : super(key: key);
+  DiscoverScreen({Key? key}) : super(key: key);
 
   static const routeName = '/discover';
+  final List<String> tabs = [
+    'General',
+    'Entertainment',
+    'Health',
+    'Science',
+    'Sports',
+    'Technology'
+  ];
+
   @override
   Widget build(BuildContext context) {
-    List<String> tabs = [
-      'General',
-      'Entertainment',
-      'Health',
-      'Science',
-      'Sports',
-      'Technology'
-    ];
-
     return DefaultTabController(
       initialIndex: 0,
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.menu,
-              color: Colors.black,
+          backgroundColor: Colors.white,
+          elevation: 2,
+          shadowColor: Colors.black.withOpacity(0.05),
+          titleSpacing: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
             ),
           ),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text(
+              "Discover",
+              style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          actions: [
+            Container(
+              margin: EdgeInsets.only(right: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.black87,
+                  size: 22,
+                ),
+                padding: EdgeInsets.all(8),
+              ),
+            ),
+          ],
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(20.0),
-          children: [_CategoryNews(tabs: tabs)],
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: TabBar(
+                  isScrollable: true,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.grey.shade700,
+                  labelStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  indicator: BoxDecoration(
+                    color: Colors.blue.shade700,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  labelPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  tabs: tabs.map((String tab) => Text(tab)).toList(),
+                ),
+              ),
+              SizedBox(height: 16),
+              Expanded(
+                child: _CategoryNews(tabs: tabs),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -74,30 +141,17 @@ class _CategoryNewsState extends State<_CategoryNews> {
 
     return Column(
       children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.25,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Discover',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium!
-                    .copyWith(color: Colors.black, fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                'News from all over the world',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _searchController,
-                onChanged: (query) {
-                  if (query.isNotEmpty) {
-                    // Call the API for search results
+        Container(
+          margin: EdgeInsets.only(top: 8, bottom: 16),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: TextFormField(
+            controller: _searchController,
+            onChanged: (query) {
+              if (query.isNotEmpty) {
+                // Call the API for search results
                     setState(() {
                       searchResults = categoryNews.getCategoryNews(query);
                     });
@@ -170,7 +224,7 @@ class _CategoryNewsState extends State<_CategoryNews> {
                             }
                             String imageUrl = list[index].urlToImage.toString();
                             Widget imageWidget;
-                            if (imageUrl != null && imageUrl.isNotEmpty) {
+                            if (imageUrl.isNotEmpty) {
                               imageWidget = ImageContainer(
                                 width: 80,
                                 height: 80,
