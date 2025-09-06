@@ -334,7 +334,7 @@ class _BreakingNews extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 200,
+            height: 230, // Increased height to accommodate content
             child: FutureBuilder<TopHeadlines>(
               future: headline.getTopHeadlines(),
               builder: (context, snapshot) {
@@ -392,75 +392,80 @@ class _BreakingNews extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                              decoration: BoxDecoration(
-                                                color: Colors.redAccent.withOpacity(0.1),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                              child: Text(
-                                                'BREAKING',
-                                                style: TextStyle(
-                                                  color: Colors.redAccent,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 10,
+                                  Expanded(  // Using Expanded to prevent overflow
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,  // Use minimum space needed
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.redAccent.withOpacity(0.1),
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: Text(
+                                                  'BREAKING',
+                                                  style: TextStyle(
+                                                    color: Colors.redAccent,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 10,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Spacer(),
-                                            Text(
-                                              formattedDate,
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          list[index].title == null
-                                              ? "Title Not Available"
-                                              : list[index].title.toString(),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            height: 1.3,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.public,
-                                              size: 14,
-                                              color: Colors.grey[600],
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Expanded(
-                                              child: Text(
-                                                list[index].source!.name == null
-                                                    ? "Source Not Available"
-                                                    : list[index].source!.name.toString(),
+                                              Spacer(),
+                                              Text(
+                                                formattedDate,
                                                 style: TextStyle(
-                                                  color: Colors.grey[600],
+                                                  color: Colors.grey,
                                                   fontSize: 12,
                                                 ),
-                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 6),  // Reduced spacing
+                                          Expanded(  // Make title take available space
+                                            child: Text(
+                                              list[index].title == null
+                                                  ? "Title Not Available"
+                                                  : list[index].title.toString(),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                                height: 1.2,  // Reduced line height
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ],
+                                          ),
+                                          const SizedBox(height: 6),  // Reduced spacing
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.public,
+                                                size: 14,
+                                                color: Colors.grey[600],
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Expanded(
+                                                child: Text(
+                                                  list[index].source!.name == null
+                                                      ? "Source Not Available"
+                                                      : list[index].source!.name.toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.grey[600],
+                                                    fontSize: 12,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
