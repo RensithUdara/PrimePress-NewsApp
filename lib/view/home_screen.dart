@@ -3,18 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:infosphere/animation/fade_animation.dart';
 import 'package:infosphere/models/new_views_models.dart';
-
 import 'package:infosphere/models/top_headlines.dart';
-import 'package:infosphere/utils/custom_tag.dart';
-import 'package:infosphere/utils/custome_container.dart';
 import 'package:infosphere/utils/category_item.dart';
-import 'package:infosphere/utils/image_container.dart';
 import 'package:infosphere/view/article_screen.dart';
-
 import 'package:infosphere/view/discover_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -37,6 +31,198 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       topHeadlinesFuture = headline.getTopHeadlines();
     });
+  }
+  
+  Widget _CategoriesScroll() {
+    List<Map<String, dynamic>> categories = [
+      {'name': 'World', 'icon': Icons.public, 'color': Colors.blue},
+      {'name': 'Business', 'icon': Icons.business, 'color': Colors.amber},
+      {'name': 'Technology', 'icon': Icons.computer, 'color': Colors.purple},
+      {'name': 'Science', 'icon': Icons.science, 'color': Colors.green},
+      {'name': 'Sports', 'icon': Icons.sports_soccer, 'color': Colors.red},
+      {'name': 'Health', 'icon': Icons.health_and_safety, 'color': Colors.teal},
+    ];
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 24.0),
+      height: 50,
+      child: ListView.builder(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          return CategoryItem(
+            categoryName: categories[index]['name'],
+            icon: categories[index]['icon'],
+            color: categories[index]['color'],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DiscoverScreen()),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _RecommendedNews() {
+    NewsviewModel headline = NewsviewModel();
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Recommended for you',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size(50, 30),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(
+                    'See all',
+                    style: TextStyle(
+                      color: Colors.blue[700],
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          FutureBuilder<TopHeadlines>(
+            future: headline.getTopHeadlines(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // Take only 3 items to display in a vertical list
+                final articles = snapshot.data!.articles!.take(3).toList();
+                
+                return ListView.separated(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: articles.length,
+                  separatorBuilder: (context, index) => Divider(height: 16),
+                  itemBuilder: (context, index) {
+                    var article = articles[index];
+                    String formattedDate = 'Date Not Available';
+                    if (article.publishedAt != null) {
+                      DateTime dateTime = DateTime.parse(article.publishedAt.toString());
+                      formattedDate = DateFormat.MMMd().format(dateTime);
+                    }
+                    
+                    return FadeAnimation(
+                      1.2,
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ArticleScreen(
+                                selectedIndex: index,
+                                topHeadlines: snapshot.data!,
+                                category: "Recommended",
+                              ),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    article.urlToImage == null
+                                        ? "https://img.freepik.com/premium-vector/error-404-concepts-landing-page_206192-61.jpg?w=1060"
+                                        : article.urlToImage.toString(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    article.title == null
+                                        ? "Title Not Available"
+                                        : article.title.toString(),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.public,
+                                        size: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        article.source?.name ?? "Source Not Available",
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        formattedDate,
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return Center(
+                  child: SpinKitCircle(
+                    color: Colors.blue[700],
+                    size: 30,
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -109,120 +295,192 @@ class _BreakingNews extends StatelessWidget {
   Widget build(BuildContext context) {
     NewsviewModel headline = NewsviewModel();
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 8.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 20,
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Breaking News',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DiscoverScreen()));
-                  },
-                  child: Text('More',
-                      style: Theme.of(context).textTheme.bodyLarge)),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DiscoverScreen()),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size(50, 30),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  'See all',
+                  style: TextStyle(
+                    color: Colors.blue[700],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           SizedBox(
-            height: 250,
+            height: 200,
             child: FutureBuilder<TopHeadlines>(
-                future: headline.getTopHeadlines(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: snapshot.data!.articles!.length,
-                      itemBuilder: (context, index) {
-                        int selectedIndex = index;
-                        var list = snapshot.data!.articles;
-                        String formattedDate = 'Date Not Available';
-                        print("object : " + formattedDate);
-                        if (list![index].publishedAt != null) {
-                          DateTime dateTime = DateTime.parse(
-                              list[index].publishedAt.toString());
-                          formattedDate = DateFormat.yMMMMd().format(dateTime);
-                        }
+              future: headline.getTopHeadlines(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.articles!.length,
+                    itemBuilder: (context, index) {
+                      int selectedIndex = index;
+                      var list = snapshot.data!.articles;
+                      String formattedDate = 'Date Not Available';
+                      if (list![index].publishedAt != null) {
+                        DateTime dateTime = DateTime.parse(
+                            list[index].publishedAt.toString());
+                        formattedDate = DateFormat.MMMd().format(dateTime);
+                      }
 
-                        return FadeAnimation(
-                          1.2,
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            margin: const EdgeInsets.only(right: 10),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ArticleScreen(
-                                              selectedIndex: selectedIndex,
-                                              topHeadlines: snapshot.data!,
-                                              category: "Breaking news",
-                                            )));
-                              },
+                      return FadeAnimation(
+                        1.2,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          margin: const EdgeInsets.only(right: 16),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ArticleScreen(
+                                    selectedIndex: selectedIndex,
+                                    topHeadlines: snapshot.data!,
+                                    category: "Breaking news",
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              clipBehavior: Clip.antiAlias,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  CustomContainer(
-                                    imageurl: list[index].urlToImage == null
-                                        ? "https://img.freepik.com/premium-vector/error-404-concepts-landing-page_206192-61.jpg?w=1060"
-                                        : list[index].urlToImage.toString(),
+                                  Container(
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          list[index].urlToImage == null
+                                              ? "https://img.freepik.com/premium-vector/error-404-concepts-landing-page_206192-61.jpg?w=1060"
+                                              : list[index].urlToImage.toString(),
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    list[index].title == null
-                                        ? "Title Not Available"
-                                        : list[index].title.toString(),
-                                    maxLines: 2,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            height: 1.5),
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: Colors.redAccent.withOpacity(0.1),
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              child: Text(
+                                                'BREAKING',
+                                                style: TextStyle(
+                                                  color: Colors.redAccent,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            Text(
+                                              formattedDate,
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          list[index].title == null
+                                              ? "Title Not Available"
+                                              : list[index].title.toString(),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            height: 1.3,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.public,
+                                              size: 14,
+                                              color: Colors.grey[600],
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Expanded(
+                                              child: Text(
+                                                list[index].source!.name == null
+                                                    ? "Source Not Available"
+                                                    : list[index].source!.name.toString(),
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 12,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  const SizedBox(height: 5),
-                                  Text(formattedDate,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                      list[index].source!.name == null
-                                          ? "Source Not Available"
-                                          : list[index].source!.name.toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall),
                                 ],
                               ),
                             ),
                           ),
-                        );
-                      },
-                    );
-                  } else {
-                    return Center(
-                      child: SpinKitCircle(
-                        color: Colors.grey,
-                      ),
-                    );
-                  }
-                }),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Center(
+                    child: SpinKitCircle(
+                      color: Colors.blue[700],
+                      size: 30,
+                    ),
+                  );
+                }
+              },
+            ),
           ),
         ],
       ),
