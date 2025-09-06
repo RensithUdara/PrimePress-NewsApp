@@ -84,7 +84,7 @@ class _CategoryNewsState extends State<_CategoryNews> {
                 'Discover',
                 style: Theme.of(context)
                     .textTheme
-                    .headline4!
+                    .headlineMedium!
                     .copyWith(color: Colors.black, fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 5),
